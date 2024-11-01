@@ -27,6 +27,7 @@ const API_PROVIDERS = {
 
 export function Settings({ open, onOpenChange, onSettingsUpdate }: SettingsProps) {
   const [isApiKeysOpen, setIsApiKeysOpen] = useState(false);
+  const [isDefaultsOpen, setIsDefaultsOpen] = useState(false);
   const [apiKeys, setApiKeys] = useState<ApiKeys>({});
   const [defaultProvider, setDefaultProvider] = useState('');
   const [defaultModel, setDefaultModel] = useState('');
@@ -143,13 +144,14 @@ export function Settings({ open, onOpenChange, onSettingsUpdate }: SettingsProps
     <DialogRoot open={open} onOpenChange={onOpenChange}>
       <Dialog className="flex flex-col max-h-[85vh]">
         <DialogTitle>Settings</DialogTitle>
-        <DialogDescription>Configure your API keys and default settings.</DialogDescription>
-        <div className="flex-1 overflow-y-auto">
+        <DialogDescription className="px-5 py-4 space-y-4">Configure your API keys and default settings.</DialogDescription>
+        <div className="overflow-y-auto">
           <div className="px-5 py-4 space-y-4">
             <div>
               <button
                 onClick={() => setIsApiKeysOpen(!isApiKeysOpen)}
-                className="flex items-center justify-between w-full p-2 rounded-lg border border-bolt-elements-borderColor hover:bg-gray-600 bg-bolt-elements-prompt-background text-bolt-elements-textPrimary focus:outline-none"
+                className="flex items-center justify-between w-full p-2 rounded-lg border border-bolt-elements-borderColor 
+                hover:bg-transparent bg-bolt-elements-button-primary-background/10 text-bolt-elements-textPrimary focus:outline-none"
               >
                 <span>API Keys</span>
                 <div className={classNames("i-ph:caret-down transition-transform", {
@@ -169,7 +171,8 @@ export function Settings({ open, onOpenChange, onSettingsUpdate }: SettingsProps
                                 type="text"
                                 value={openAiLikeBaseUrl}
                                 onChange={(e) => setOpenAiLikeBaseUrl(e.target.value)}
-                                className="w-full p-2 rounded-lg border border-bolt-elements-borderColor hover:bg-gray-600 bg-bolt-elements-prompt-background text-bolt-elements-textPrimary focus:outline-none"
+                                className="w-full p-2 rounded-lg border border-bolt-elements-borderColor hover:bg-gray-600 
+                                bg-bolt-elements-prompt-background text-bolt-elements-textPrimary focus:outline-none"
                                 placeholder="Enter OpenAI-like Base URL"
                               />
                               <button
@@ -187,7 +190,8 @@ export function Settings({ open, onOpenChange, onSettingsUpdate }: SettingsProps
                                 type="password"
                                 value={apiKeys[key] || ''}
                                 onChange={(e) => setApiKeys({...apiKeys, [key]: e.target.value})}
-                                className="w-full p-2 rounded-lg border border-bolt-elements-borderColor hover:bg-gray-600 bg-bolt-elements-prompt-background text-bolt-elements-textPrimary focus:outline-none"
+                                className="w-full p-2 rounded-lg border border-bolt-elements-borderColor hover:bg-gray-600 
+                                bg-bolt-elements-prompt-background text-bolt-elements-textPrimary focus:outline-none"
                                 placeholder="Enter OpenAI-like API Key"
                               />
                               <button
@@ -209,7 +213,8 @@ export function Settings({ open, onOpenChange, onSettingsUpdate }: SettingsProps
                               type="text"
                               value={ollamaBaseUrl}
                               onChange={(e) => setOllamaBaseUrl(e.target.value)}
-                              className="w-full p-2 rounded-lg border border-bolt-elements-borderColor hover:bg-gray-600 bg-bolt-elements-prompt-background text-bolt-elements-textPrimary focus:outline-none"
+                              className="w-full p-2 rounded-lg border border-bolt-elements-borderColor hover:bg-gray-600 
+                              bg-bolt-elements-prompt-background text-bolt-elements-textPrimary focus:outline-none"
                               placeholder="Enter Ollama Base URL (without /api)"
                             />
                             <button
@@ -230,7 +235,8 @@ export function Settings({ open, onOpenChange, onSettingsUpdate }: SettingsProps
                             type='password'
                             value={apiKeys[key] || ''}
                             onChange={(e) => setApiKeys({...apiKeys, [key]: e.target.value})}
-                            className="w-full p-2 rounded-lg border border-bolt-elements-borderColor hover:bg-gray-600 bg-bolt-elements-prompt-background text-bolt-elements-textPrimary focus:outline-none"
+                            className="w-full p-2 rounded-lg border border-bolt-elements-borderColor hover:bg-gray-600 
+                            bg-bolt-elements-prompt-background text-bolt-elements-textPrimary focus:outline-none"
                             placeholder={provider === 'Ollama' ? 'Enter Ollama Base URL' : `Enter ${provider} API Key`}
                           />
                           <button
@@ -252,41 +258,57 @@ export function Settings({ open, onOpenChange, onSettingsUpdate }: SettingsProps
                 </div>
               )}
             </div>
-            <div className="space-y-2">
-              <label className="text-sm text-bolt-elements-textSecondary">Default Provider</label>
-              <select
-                value={defaultProvider}
-                onChange={(e) => {
-                  setDefaultProvider(e.target.value);
-                  setDefaultModel(''); // Reset model when provider changes
-                }}
-                className="w-full p-2 rounded-lg border border-bolt-elements-borderColor hover:bg-gray-600 bg-bolt-elements-prompt-background text-bolt-elements-textPrimary focus:outline-none"
+            <div>
+              <button
+                onClick={() => setIsDefaultsOpen(!isDefaultsOpen)}
+                className="flex items-center justify-between w-full p-2 rounded-lg border border-bolt-elements-borderColor hover:bg-transparent 
+                bg-bolt-elements-button-primary-background/10 text-bolt-elements-textPrimary focus:outline-none"
               >
-                <option value="">Select Provider</option>
-                {Object.keys(API_PROVIDERS).map(provider => (
-                  <option key={provider} value={provider}>{provider}</option>
-                ))}
-              </select>
+                <span>Defaults</span>
+                <div className={classNames("i-ph:caret-down transition-transform", {
+                  "rotate-180": isDefaultsOpen
+                })}/>
+              </button>
+              {isDefaultsOpen && (
+                <div className="mt-2 space-y-2">
+                  <div className="space-y-2">
+                    <label className="text-sm text-bolt-elements-textSecondary">Default Provider</label>
+                    <select
+                      value={defaultProvider}
+                      onChange={(e) => {
+                        setDefaultProvider(e.target.value);
+                        setDefaultModel(''); // Reset model when provider changes
+                      }}
+                      className="w-full p-2 rounded-lg border border-bolt-elements-borderColor hover:bg-gray-600 bg-bolt-elements-prompt-background text-bolt-elements-textPrimary focus:outline-none"
+                    >
+                      <option value="">Select Provider</option>
+                      {Object.keys(API_PROVIDERS).map(provider => (
+                        <option key={provider} value={provider}>{provider}</option>
+                      ))}
+                    </select>
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-sm text-bolt-elements-textSecondary">Default Model</label>
+                    <select
+                      value={defaultModel}
+                      onChange={(e) => setDefaultModel(e.target.value)}
+                      className="w-full p-2 rounded-lg border border-bolt-elements-borderColor hover:bg-gray-600 bg-bolt-elements-prompt-background text-bolt-elements-textPrimary focus:outline-none"
+                    >
+                      <option value="">Select Model</option>
+                      {MODEL_LIST.filter(model => model.provider === defaultProvider).map(model => (
+                        <option key={model.name} value={model.name}>{model.label}</option>
+                      ))}
+                    </select>
+                  </div>
+                  <button
+                    onClick={clearDefaults}
+                    className="mt-4 w-full p-2 text-red-500 border border-red-500 rounded bg-red-500/10 hover:bg-bolt-elements-prompt-background"
+                  >
+                    Clear Defaults
+                  </button>
+                </div>
+              )}
             </div>
-            <div className="space-y-2">
-              <label className="text-sm text-bolt-elements-textSecondary">Default Model</label>
-              <select
-                value={defaultModel}
-                onChange={(e) => setDefaultModel(e.target.value)}
-                className="w-full p-2 rounded-lg border border-bolt-elements-borderColor hover:bg-gray-600 bg-bolt-elements-prompt-background text-bolt-elements-textPrimary focus:outline-none"
-              >
-                <option value="">Select Model</option>
-                {MODEL_LIST.filter(model => model.provider === defaultProvider).map(model => (
-                  <option key={model.name} value={model.name}>{model.label}</option>
-                ))}
-              </select>
-            </div>
-            <button
-              onClick={clearDefaults}
-              className="mt-4 w-full p-2 text-red-500 border border-red-500 rounded bg-red-500/10 hover:bg-bolt-elements-prompt-background"
-            >
-              Clear Defaults
-            </button>
           </div>
         </div>
         <div className="flex justify-end gap-2 p-4 mt-auto border-t border-bolt-elements-borderColor">

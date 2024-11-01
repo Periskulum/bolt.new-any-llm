@@ -103,6 +103,14 @@ export default defineConfig({
     'transition-theme': 'transition-[background-color,border-color,color] duration-150 bolt-ease-cubic-bezier',
     kdb: 'bg-bolt-elements-code-background text-bolt-elements-code-text py-1 px-1.5 rounded-md',
     'max-w-chat': 'max-w-[var(--chat-max-width)]',
+    // Scrollbar shortcuts
+    'scrollbar-custom': [
+      'scrollbar-thin',
+      'scrollbar-track-bolt-elements-bg-depth-1',
+      'scrollbar-thumb-bolt-elements-borderColor',
+      'hover:scrollbar-thumb-bolt-elements-borderColorActive',
+    ].join(' '),
+    'scrollbar-hidden': 'scrollbar-none',
   },
   rules: [
     /**
@@ -110,6 +118,18 @@ export default defineConfig({
      * any conflicts with minified CSS classes.
      */
     ['b', {}],
+    // Custom scrollbar rules
+    [/^scrollbar-track-(.+)$/, ([, c]) => ({ '&::-webkit-scrollbar-track': `var(--${c})` })],
+    [/^scrollbar-thumb-(.+)$/, ([, c]) => ({ '&::-webkit-scrollbar-thumb': `var(--${c})` })],
+    [/^scrollbar-thin$/, () => ({
+      '&::-webkit-scrollbar': '8px',
+      'scrollbar-width': 'thin',
+    })],
+    [/^scrollbar-none$/, () => ({
+      '&::-webkit-scrollbar': 'none',
+      'scrollbar-width': 'none',
+      '-ms-overflow-style': 'none',
+    })],
   ],
   theme: {
     colors: {
